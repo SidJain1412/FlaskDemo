@@ -14,4 +14,13 @@ def index():
 def hello():
     # This data gets passed to hello.html
     user = {'username': 'Sid'}
-    return render_template("hello.html", user=user, title='Home')
+    posts = [
+        {
+            'author': {'username': 'Vatsal'},
+            'body': 'Chilling in Mumbai'
+        },
+        {
+            'author': {'username': 'Sejal'},
+            'body': 'Chilling in Germany'
+        }]
+    return render_template("hello.html", user=user, title='Home', posts=posts)

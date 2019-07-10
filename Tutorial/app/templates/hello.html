@@ -9,5 +9,10 @@
 </head>
 <body>
 	<h1>Hello, {{user.username}}!</h1>
+	{% if posts %}
+		{% for post in posts %}
+			<div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
+		{% endfor %}
+	{% endif %}
 </body>
 </html>
