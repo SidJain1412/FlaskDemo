@@ -1,4 +1,5 @@
 from app import app
+from app.forms import LoginForm
 from flask import render_template
 
 
@@ -24,3 +25,11 @@ def hello():
             'body': 'Chilling in Germany'
         }]
     return render_template("hello.html", user=user, title='Home', posts=posts)
+
+
+# Making the login page using forms.py LoginForm class.
+# Passing instance of this LoginForm class to the html page
+@app.route('/login')
+def login():
+    form = LoginForm()
+    return render_template('login.html', title="Sign In", form=form)
