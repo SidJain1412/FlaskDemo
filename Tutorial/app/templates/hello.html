@@ -1,18 +1,12 @@
-<html>
-<head>
-	{# Using templating #}
-	{% if title %}
-		<title>{{title}} - Blog</title>
-	{% else %}
-		<title>Welcome to the Blog</title>
-	{% endif %}
-</head>
-<body>
+{# Extending base.html . This adds base code to this file #}
+{# Any extra code can be inserted into block content, as seen below #}
+{% extends "base.html" %}
+
+{% block content %}
 	<h1>Hello, {{user.username}}!</h1>
 	{% if posts %}
 		{% for post in posts %}
 			<div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
 		{% endfor %}
 	{% endif %}
-</body>
-</html>
+{% endblock %}
