@@ -1,9 +1,22 @@
 from app import app
 from app.forms import LoginForm
-from flask import render_template, redirect, flash
+# Flash for messages, make_response for JSON errors (instead of HTML errors)
+from flask import render_template, redirect, flash, make_response, jsonify
 
 
+# Modifying 404 to send this custom response
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Resource Not Found.'}), 404)
 # Multiple decorators for more than 1 URL to give the same return
+
+
+# Error handling for bad request
+@app.errorhandler(400)
+def bad_request(error):
+    return make_response(jsonify({'error': 'Bad Request. Try again.'}, 400))
+
+
 @app.route('/')
 @app.route('/index')
 def index():
