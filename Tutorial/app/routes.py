@@ -1,7 +1,7 @@
 from app import app
 from app.forms import LoginForm
 # Flash for messages, make_response for JSON errors (instead of HTML errors)
-from flask import render_template, redirect, flash, make_response, jsonify
+from flask import render_template, redirect, flash, make_response, jsonify, url_for
 # Using HTTPAuth to increase security by protecting through username and p/w
 from flask_httpauth import HTTPBasicAuth
 
@@ -74,5 +74,5 @@ def login():
         # We add flash support to base.html
         flash('Login requested for user {}, remember_me={}'.format(
             form.username.data, form.remember_me.data))
-        return redirect('/index')
+        return redirect(url_for('index'))
     return render_template('login.html', title="Sign In", form=form)
