@@ -10,12 +10,19 @@
 			{# form.field_name.label for Field label #}
 			{{ form.username.label }}<br>
 			{# form.field_name() for Field #}
-			{{ form.username(size = 32)}}
 			{# HTML attributes can be passed as arguments #}
+			{{ form.username(size = 32)}}<br>
+			{# To show error messages instead of just redisplaying the form #}
+			{% for error in form.username.errors %}
+				<span style="color: red;">[{{error}}]</span>
+			{% endfor %}			
 		</p>
 		<p>
 			{{ form.password.label }}<br>
-			{{ form.password(size = 32)}}
+			{{ form.password(size = 32)}}<br>
+			{% for error in form.password.errors %}
+				<span style="color: red;">[{{error}}]</span>
+			{% endfor %}
 		</p>
 		<p>{{ form.remember_me() }} {{form.remember_me.label}}</p>
 		<p>{{ form.submit() }}</p>

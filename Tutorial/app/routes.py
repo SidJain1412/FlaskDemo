@@ -35,7 +35,7 @@ def bad_request(error):
 # Error handling for Unauthorized access (Auth)
 @auth.error_handler
 def unauthorized():
-    return make_response(jsonify({'error': 'Unauthorized access'}, 401))
+    return make_response(jsonify({'error': 'Unauthorized access'}, 403))
 
 
 # ROUTES
