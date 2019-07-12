@@ -1,0 +1,8 @@
+{# Sub template for posts. This will be called in user.html and index.html #}
+
+<table>
+	<tr valign="top">
+		<td><img src="{{post.author.avatar(32)}}"></td>
+		<td><i>{{post.author.username}}</i> says: <br><b>{{post.body}}</b></td>
+	</tr>
+</table>
