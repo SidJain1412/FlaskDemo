@@ -100,6 +100,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
+    flash("Logged out successfully.")
     return redirect(url_for('login'))
 
 
@@ -117,3 +118,16 @@ def register():
         return redirect(url_for('login'))
     # Title is going to base.html through register.html
     return render_template('register.html', title="Register", form=form)
+
+
+# User profile page route:
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    # Easy way to check if no user found. Throws 404 if not found.
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = [
+        {'author': user, 'body': 'Test 1'},
+        {'author': user, 'body': 'Test 2'}
+    ]
+    return render_template('user.html', user=user, posts=posts)
