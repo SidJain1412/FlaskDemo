@@ -1,5 +1,5 @@
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm
 # Flash for messages, make_response for JSON errors (instead of HTML errors)
 from flask import render_template, redirect, flash, make_response, jsonify, url_for, request
 # Using HTTPAuth to increase security by protecting through username and p/w
@@ -7,6 +7,7 @@ from flask_httpauth import HTTPBasicAuth
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
+from datetime import datetime
 
 
 # Functions can be protected by adding `@auth.login_required` decorator
@@ -40,6 +41,16 @@ def bad_request(error):
 @auth.error_handler
 def unauthorized():
     return make_response(jsonify({'error': 'Unauthorized access'}, 403))
+
+
+# For last seen
+@app.before_request
+def before_request():
+    # No need for session.add as user already exists
+    if current_user.is_authenticated:
+        # This is a python datetime object
+        current_user.last_seen = datetime.utcnow()
+        db.session.commit()
 
 
 # ROUTES
@@ -131,3 +142,21 @@ def user(username):
         {'author': user, 'body': 'Test 2'}
     ]
     return render_template('user.html', user=user, posts=posts)
+
+# User profile editing route:
+
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.about_me = form.about_me.data
+        db.session.commit()
+        flash('Your changes have been saved!')
+        return redirect(url_for('user', username=current_user.username))
+    elif request.method == "GET":
+        form.username.data = current_user.username
+        form.about_me.data = current_user.about_me
+    return render_template('edit_profile.html', title='Edit Your Profile', form=form)
