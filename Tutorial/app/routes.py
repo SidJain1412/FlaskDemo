@@ -1,5 +1,5 @@
-from app import app
-from app.forms import LoginForm
+from app import app, db
+from app.forms import LoginForm, RegistrationForm
 # Flash for messages, make_response for JSON errors (instead of HTML errors)
 from flask import render_template, redirect, flash, make_response, jsonify, url_for, request
 # Using HTTPAuth to increase security by protecting through username and p/w
@@ -55,7 +55,6 @@ def index():
 @app.route('/hello')
 def hello():
     # This data gets passed to hello.html
-    user = {'username': 'Sid'}
     posts = [
         {
             'author': {'username': 'Vatsal'},
@@ -65,7 +64,7 @@ def hello():
             'author': {'username': 'Sejal'},
             'body': 'Chilling in Germany'
         }]
-    return render_template("hello.html", user=user, title='Home', posts=posts)
+    return render_template("hello.html", title='Home', posts=posts)
 
 
 # Making the login page using forms.py LoginForm class.
@@ -101,4 +100,20 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash("Successfully Registered!")
+        return redirect(url_for('login'))
+    # Title is going to base.html through register.html
+    return render_template('register.html', title="Register", form=form)
