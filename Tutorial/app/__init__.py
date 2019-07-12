@@ -10,6 +10,8 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
-
+# Telling Flask Login that our login view(function) is named 'login'
+# Now we can use the `@login_required` decorator
+login.login_view = 'login'
 
 from app import routes, models
