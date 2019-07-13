@@ -69,6 +69,22 @@ class User(UserMixin, db.Model):
         if self.is_following(user):
             self.followed.remove(user)
 
+    def folowed_posts(self):
+        # First we join on the followers table (as it is our association)
+        # We are making a temporary table through this join
+        # We see the posts where user_id is same as followed id for a follower
+        # Now we filter where follower_id is same as user id
+        # Then we sort on descending timestamp
+        # This `followed` has all posts by the people a user follows
+        followed = Post.query.join(
+            followers, (followers.c.followed_id == Post.user_id)).filter(
+            followers.c.followed_id == self.id)
+        # But it doesn't have user's own posts
+        # User's own posts:
+        own = Post.query.filter_by(user_id==self.id)
+        # Returning union of own and following posts, sorted by timestamp
+        return followed.union(own).order_by(Post.timestamp.desc())
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
