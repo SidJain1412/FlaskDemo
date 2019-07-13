@@ -11,6 +11,15 @@ def load_user(id):
     return User.query.get(int(id))
 
 
+# Adding a table for followers for users
+followers = db.Table('followers',
+                     db.Column('follower_id', db.Integer,
+                               db.ForeignKey('user.id')),
+                     db.Column('followed_id', db.Integer,
+                               db.ForeignKey('user.id'))
+                     )
+
+
 # When making changes to models, you must migrate again
 # No need to remake the entire table and drop existing entries
 class User(UserMixin, db.Model):
@@ -21,6 +30,12 @@ class User(UserMixin, db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    # Users that a user has followed
+    followed = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
