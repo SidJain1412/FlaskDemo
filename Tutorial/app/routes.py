@@ -23,20 +23,6 @@ def get_password(username):
     return None
 
 
-# ERROR HANDLING
-# Modifying 404 to send this custom response
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Resource Not Found.'}), 404)
-# Multiple decorators for more than 1 URL to give the same return
-
-
-# Error handling for bad request
-@app.errorhandler(400)
-def bad_request(error):
-    return make_response(jsonify({'error': 'Bad Request. Try again.'}, 400))
-
-
 # Error handling for Unauthorized access (Auth)
 @auth.error_handler
 def unauthorized():
@@ -54,6 +40,8 @@ def before_request():
 
 
 # ROUTES
+
+# Multiple decorators for more than 1 URL to give the same return
 @app.route('/')
 @app.route('/index')
 # Can't view this page without logging in. Flask login redirects to /login

@@ -14,4 +14,4 @@ login = LoginManager(app)
 # Now we can use the `@login_required` decorator
 login.login_view = 'login'
 
-from app import routes, models
+from app import routes, models, errors
